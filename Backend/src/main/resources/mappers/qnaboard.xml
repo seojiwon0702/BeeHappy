@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.house.model.mapper.QnABoardMapper">
+	
+	<select id="selectQnABoardList" resultType="qnaBoardDto">
+		select *,
+			case when date_format(regtime, '%Y%m%d') = date_format(now(), '%Y%m%d')
+			then date_format(regtime, '%H:%i:%s')
+			else date_format(regtime, '%y.%m.%d')
+			end regtime		
+		from qnaboard
+		order by no desc;
+		
+	</select>
+	
+	<select id="selectQnABoardByNo" parameterType="int" resultType="QnABoardDto">
+		select no, writer, subject, content, regtime
+		from qnaboard
+		where no = #{no}
+	</select>
+
+	<insert id="insertQnABoard" parameterType="QnABoardDto">
+		insert into qnaboard (writer, subject, content, regtime)
+		values (#{writer}, #{subject}, #{content}, now());
+	</insert>
+	
+	<update id="updateQnABoard" parameterType="QnABoardDto">
+		update qnaboard
+		set subject =#{subject}, content=#{content}
+        where no = #{no}
+	</update>
+	
+	<delete id="deleteQnABoard" parameterType="int">
+		delete from qnaboard 
+		where no = #{no}
+	</delete>
+</mapper>

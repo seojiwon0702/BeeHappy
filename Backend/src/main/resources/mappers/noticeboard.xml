@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.house.model.mapper.NoticeBoardMapper">
+	
+	<select id="selectNoticeBoardList" parameterType="map" resultType="noticeBoardDto">
+		select *,
+			case when date_format(regtime, '%Y%m%d') = date_format(now(), '%Y%m%d')
+			then date_format(regtime, '%H:%i:%s')
+			else date_format(regtime, '%y.%m.%d')
+			end regtime
+		from notice
+		order by no desc
+		limit #{start}, #{spp}
+	</select>
+	
+	<select id="selectNoticeBoardByNo" parameterType="int" resultType="noticeBoardDto">
+		select no, writer, subject, content, regtime
+		from notice
+		where no = #{no}
+	</select>
+
+	<insert id="insertNoticeBoard" parameterType="NoticeBoardDto">
+		insert into notice (writer, subject, content, regtime)
+		values (#{writer}, #{subject}, #{content}, now());
+	</insert>
+	
+	<update id="updateNoticeBoard" parameterType="NoticeBoardDto">
+		update notice
+		set subject =#{subject}, content=#{content}
+        where no = #{no}
+	</update>
+	
+	<delete id="deleteNoticeBoard" parameterType="int">
+		delete from notice 
+		where no = #{no}
+	</delete>
+</mapper>
